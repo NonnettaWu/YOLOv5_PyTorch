@@ -6,6 +6,13 @@ With Google Colab provides a plant for training, the repository was creted to us
 
 His repository: https://github.com/bubbliiiing
 
+In the repository, you can choose BackBone from `CSPdarknet`, `ConvNext` and `SwinTransformer`. And load their own pre_weights for training. After setting SwinTransformer as BackBone,  the problem that pre_weights loaded failedly was fixed.
+
+```
+pretrained_dict = {k.replace('layers.', 'backbone.layers.'): v for k, v in torch.load(model_path).items()}
+pretrained_dict = {k.replace('patch_embed.', 'backbone.patch_embed.'): v for k, v in pretrained_dict.items()}
+```
+
 For contrasting with other models, imageSize is set to [3, 640, 640]. Besides, pre_weights have been used for training.You can do lots of settings in this Model with detailed exegesises.
 
 The running environments has been supported in requirements.txt.
