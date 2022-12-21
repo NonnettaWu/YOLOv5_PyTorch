@@ -20,6 +20,21 @@ The running environments has been supported in requirements.txt.
 ```
 pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple -y
 ```
+
+*Google Colab sometimes cannot run successfully with this Repository(changed from Bubliiiing's Codes).*
+
+*Change pytorch version in 1.7.1 will help, i fix it in 2022.09. Good Luck!*
+
+**To keep Colab online, press key F12 and put below codes on Websites Console, finally run it with Enter key.**
+
+```
+function ConnectButton(){
+	console.log("Connect pushed");
+	document.querySelector("#top-toolbar > colab-connect-button").shadowRoot.querySelector("#connect").click()
+}
+setInterval(ConnectButton,60000);
+```
+
  `YOLOv5 Structure` is below:
 
 <img src="https://user-images.githubusercontent.com/86788385/208301572-3b5c6b1d-cbd7-418a-ae12-a681f0fa5776.png" width="800">
