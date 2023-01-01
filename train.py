@@ -96,7 +96,7 @@ if __name__ == "__main__":
     #      可以设置mosaic=True，直接随机初始化参数开始训练，但得到的效果仍然不如有预训练的情况。（像COCO这样的大数据集可以这样做）
     #   2、了解imagenet数据集，首先训练分类模型，获得网络的主干部分权值，分类模型的 主干部分 和该模型通用，基于此进行训练。
     #----------------------------------------------------------------------------------------------------------------------------#
-    model_path      = 'model_data/swin_tiny_patch4_window7.pth'
+    model_path      = 'model_data/yolov5l.pth'
     #------------------------------------------------------#
     #   input_shape     输入的shape大小，一定要是32的倍数
     #------------------------------------------------------#
@@ -107,7 +107,7 @@ if __name__ == "__main__":
     #                   convnext_small
     #                   swin_transfomer_tiny
     #------------------------------------------------------#
-    backbone        = 'swin_transfomer_tiny'
+    backbone        = 'cspdarknet'
     #----------------------------------------------------------------------------------------------------------------------------#
     #   pretrained      是否使用主干网络的预训练权重，此处使用的是主干的权重，因此是在模型构建的时候进行加载的。
     #                   如果设置了model_path，则主干的权值无需加载，pretrained的值无意义。
@@ -119,7 +119,7 @@ if __name__ == "__main__":
     #   phi             所使用的YoloV5的版本。s、m、l、x
     #                   在除cspdarknet的其它主干中仅影响panet的大小
     #------------------------------------------------------#
-    phi             = 's'
+    phi             = 'l'
     #------------------------------------------------------------------#
     #   mosaic              马赛克数据增强。
     #   mosaic_prob         每个step有多少概率使用mosaic数据增强，默认50%。
@@ -179,7 +179,7 @@ if __name__ == "__main__":
     #------------------------------------------------------------------#
     Init_Epoch          = 0
     Freeze_Epoch        = 50
-    Freeze_batch_size   = 2
+    Freeze_batch_size   = 16
     #------------------------------------------------------------------#
     #   解冻阶段训练参数
     #   此时模型的主干不被冻结了，特征提取网络会发生改变
@@ -189,8 +189,8 @@ if __name__ == "__main__":
     #                           Adam可以使用相对较小的UnFreeze_Epoch
     #   Unfreeze_batch_size     模型在解冻后的batch_size
     #------------------------------------------------------------------#
-    UnFreeze_Epoch      = 300
-    Unfreeze_batch_size = 2
+    UnFreeze_Epoch      = 100
+    Unfreeze_batch_size = 4
     #------------------------------------------------------------------#
     #   Freeze_Train    是否进行冻结训练
     #                   默认先冻结主干训练后解冻训练。
@@ -245,7 +245,7 @@ if __name__ == "__main__":
     #                   开启后会加快数据读取速度，但是会占用更多内存
     #                   内存较小的电脑可以设置为2或者0  
     #------------------------------------------------------------------#
-    num_workers         = 0
+    num_workers         = 16
 
     #------------------------------------------------------#
     #   train_annotation_path   训练图片路径和标签
@@ -306,9 +306,13 @@ if __name__ == "__main__":
         #------------------------------------------------------#
         model_dict      = model.state_dict()
         # Todo Make Sure Weights_Keys Match Model
+        '''
+        If you choose to use SwinTransformer as BackBone, you should add Pre_weights by below codes replace the raw codes.
+
         pretrained_dict = {k.replace('layers.', 'backbone.layers.'): v for k, v in torch.load(model_path).items()}
         pretrained_dict = {k.replace('patch_embed.', 'backbone.patch_embed.'): v for k, v in pretrained_dict.items()}
-        # pretrained_dict = torch.load(model_path, map_location = device)
+        '''
+        pretrained_dict = torch.load(model_path, map_location = device)
         load_key, no_load_key, temp_dict = [], [], {}
         for k, v in pretrained_dict.items():
             if k in model_dict.keys() and np.shape(model_dict[k]) == np.shape(v):
