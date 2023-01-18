@@ -312,6 +312,12 @@ if __name__ == "__main__":
         pretrained_dict = {k.replace('layers.', 'backbone.layers.'): v for k, v in torch.load(model_path).items()}
         pretrained_dict = {k.replace('patch_embed.', 'backbone.patch_embed.'): v for k, v in pretrained_dict.items()}
         '''
+        '''
+        If you choose to use ConvNext as BackBone, you should add Pre_weights by below codes replace the raw codes.
+
+        pretrained_dict = {k.replace('downsample_layers.', 'backbone.downsample_layers.'): v for k, v in torch.load(model_path).items()}
+        pretrained_dict = {k.replace('stages.', 'backbone.stages.'): v for k, v in pretrained_dict.items()}
+        '''
         pretrained_dict = torch.load(model_path, map_location = device)
         load_key, no_load_key, temp_dict = [], [], {}
         for k, v in pretrained_dict.items():
